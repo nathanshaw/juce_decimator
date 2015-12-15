@@ -14,28 +14,88 @@
 
 //==============================================================================
 BitCrusherAudioProcessorEditor::BitCrusherAudioProcessorEditor (BitCrusherAudioProcessor& p)
-    : AudioProcessorEditor (&p), processor (p), gainSlider("gain"), effectSlider("effect")
+    : AudioProcessorEditor (&p),
+        processor (p),
+        inputGainSlider("Input Gain"),
+        outputGainSlider("Output Gain"),
+        effectSlider1("Effect1"),
+        holdRadio("Hold"),
+        clipRadio("Clip"),
+        rectifyRadio("Rectify"),
+        spaceRadio("Space")
+        // effectSlider2("Effect2")
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (400, 300);
+    setSize (600, 250);
+    LookAndFeel::setDefaultLookAndFeel(&myLookAndFeel);
     
-    //Set our slider parameters and register ourselves as a listened
-    effectSlider.setTextBoxStyle(Slider::NoTextBox, false, 0, 0);
-    effectSlider.setSliderStyle(Slider::Rotary);
-    effectSlider.setRange(0.1, 1.0);
-    effectSlider.addListener(this);
+    // processor.addChangeListener(this);
+    // ------------------ create some buttons -------------------------------
+    addAndMakeVisible(rectifyRadio);
+    addAndMakeVisible(clipRadio);
+    addAndMakeVisible(holdRadio);
+    addAndMakeVisible(spaceRadio);
+    
+    rectifyRadio.setRadioGroupId(1);
+    clipRadio.setRadioGroupId(1);
+    holdRadio.setRadioGroupId(1);
+    spaceRadio.setRadioGroupId(1);
+    
+    rectifyRadio.setBoundsRelative(0.05, 0.76, 0.2, 0.14);
+    holdRadio.setBoundsRelative(0.25, 0.76, 0.2, 0.14);
+    clipRadio.setBoundsRelative(0.45, 0.76, 0.2, 0.14);
+    spaceRadio.setBoundsRelative(0.65, 0.76, 0.2, 0.14);
+    
+    rectifyRadio.addListener(this);
+    holdRadio.addListener(this);
+    clipRadio.addListener(this);
+    spaceRadio.addListener(this);
+    
+    holdRadio.setToggleState(true, dontSendNotification);
+    
+    // -----------------------------------------------------------------------
+    effectSlider1.setTextBoxStyle(Slider::NoTextBox, true, 100, 15);
+    effectSlider1.setSliderStyle(Slider::Rotary);
+    effectSlider1.setRange(0.1, 1.0);
+    effectSlider1.addListener(this);
     //Add the slider as a child component of this component and make it visible
-    addAndMakeVisible(effectSlider);
+    addAndMakeVisible(effectSlider1);
     
-    //Set our slider parameters and register ourselves as a listened
-    gainSlider.setTextBoxStyle(Slider::NoTextBox, false, 0, 0);
-    gainSlider.setSliderStyle(Slider::Rotary);
-    gainSlider.setRange(0.0, 1.0);
-    gainSlider.addListener(this);
-    //Add the slider as a child component of this component and make it visible
-    addAndMakeVisible(gainSlider);
+    effectSlider1Label.setText("Intensity", dontSendNotification);
+    effectSlider1Label.setColour(juce::Label::textColourId,
+                          juce::Colour(255.0f,100.0f,50.0f));
+    effectSlider1Label.attachToComponent(&effectSlider1, false);
+    effectSlider1Label.setJustificationType(Justification::centredTop);
+    addAndMakeVisible(effectSlider1Label);
     
+    inputGainSlider.setTextBoxStyle(Slider::NoTextBox, true, 100, 15);
+    inputGainSlider.setSliderStyle(Slider::Rotary);
+    inputGainSlider.setRange(0.5, 2.0);
+    inputGainSlider.addListener(this);
+    addAndMakeVisible(inputGainSlider);
+    
+    outputGainSlider.setTextBoxStyle(Slider::NoTextBox, true, 100, 15);
+    outputGainSlider.setSliderStyle(Slider::Rotary);
+    outputGainSlider.setRange(0.5, 2.0);
+    outputGainSlider.addListener(this);
+    addAndMakeVisible(outputGainSlider);
+    
+    inputGainSliderLabel.setText("Input Gain", dontSendNotification);
+    inputGainSliderLabel.setColour(juce::Label::textColourId,
+                                 juce::Colour(255.0f,100.0f,50.0f));
+    inputGainSliderLabel.attachToComponent(&inputGainSlider, false);
+    inputGainSliderLabel.setJustificationType(Justification::centredTop);
+    addAndMakeVisible(inputGainSliderLabel);
+    
+    outputGainSliderLabel.setText("Output Gain", dontSendNotification);
+    outputGainSliderLabel.setColour(juce::Label::textColourId,
+                                   juce::Colour(255.0f,100.0f,50.0f));
+    outputGainSliderLabel.attachToComponent(&outputGainSlider, false);
+    outputGainSliderLabel.setJustificationType(Justification::centredTop);
+    addAndMakeVisible(outputGainSliderLabel);
+    
+    // addMouseListener(this, true);
     // Manually call the timerCallback() once so that the sliders and UI updates
     // before the window is open. This is a trick.
     timerCallback();
@@ -50,20 +110,48 @@ BitCrusherAudioProcessorEditor::~BitCrusherAudioProcessorEditor()
 //==============================================================================
 void BitCrusherAudioProcessorEditor::paint (Graphics& g)
 {
-    g.fillAll (Colours::white);
-
-    g.setColour (Colours::black);
-    g.setFont (15.0f);
-    g.drawFittedText ("Bit Crushing Baby!!!", getLocalBounds(), Justification::centred, 1);
+    //g.fillAll (Colours::white);
+    //g.setColour (Colours::black);
+    // g.setFont (15.0f);
+    // g.drawFittedText ("Bit Crushing Baby!!!", getLocalBounds(), Justification::centred, 1);
+    
+    // ------------- EVERYTHING FROM HERE ON OUT I JACKED FROM JAKE --------------
+    
+    g.fillAll (Colour(0,0,0));
+    g.setGradientFill(ColourGradient(Colour(255,255,255), 0, 0, Colour(211,211,211), 600, 0, false));
+    //top rectangle
+    //g.fillRoundedRectangle(0,6,600,8,2);
+    /*
+    g.setGradientFill(ColourGradient(Colour(255,255,255), 0, 280, Colour(211,211,211), 300, 280, false));
+    //lower rectangle & text
+    //first half
+    g.fillRoundedRectangle(0,263,370,8,2);
+    //text
+    g.setColour(Colour(uint8(211),uint8(211),uint8(211),float(1)));
+    g.setFont (Font("Arial", 10, Font::bold + Font::italic));
+    g.drawSingleLineText(" Mumu[Audio] | MNML Granular | CalArts MTIID", 370, 270);
+    //second rect
+    g.fillRoundedRectangle(572,263,26,8,2);
+    
+    Image Logo = ImageCache::getFromMemory(BinaryData::MumuLight_png, BinaryData::MumuLight_pngSize);
+    //g.drawImageAt(Logo, 10, 40);
+    g.drawImage(Logo, 10, 218, 65, 35, 0, 0, 115, 65);
+    Image MTIID = ImageCache::getFromMemory(BinaryData::MTIID_png, BinaryData::MTIID_pngSize);
+    //g.drawImageAt(Logo, 10, 40);
+    g.drawImage(MTIID, 83, 220, 85, 30, 0, 0, 190, 95);
+    
+    //vert
+    g.fillRoundedRectangle(171,208,1,55,0);
+    //horizontal
+    g.fillRoundedRectangle(0,208,600,1,0);
+     */
 }
 
 void BitCrusherAudioProcessorEditor::resized()
 {
-    // This is generally where you'll want to lay out the positions of any
-    // subcomponents in your editor..
-    gainSlider.setBounds(10, 10, 60, 60);
-    effectSlider.setBounds(100,10,60,60);
-    
+    inputGainSlider.setBoundsRelative(0.01, 0.05, 0.18, 0.18);
+    effectSlider1.setBoundsRelative(0.13, 0.05, 0.18, 0.18);
+    outputGainSlider.setBoundsRelative(0.25, 0.05, 0.18, 0.18);
 }
 
 void BitCrusherAudioProcessorEditor::timerCallback(){
@@ -72,24 +160,49 @@ void BitCrusherAudioProcessorEditor::timerCallback(){
     // when automation is drawn in the host. However, because of this, we DO NOT
     // send a change notification that the slider updated, because that would call
     // sliderValueChanged, which tells the host to update, creating a feedback look.
-    gainSlider.setValue(processor.gainParam->getValue(), dontSendNotification);
-    effectSlider.setValue(processor.effectParam->getValue(), dontSendNotification);
+    inputGainSlider.setValue(processor.inputGainParam->getValue(), dontSendNotification);
+    effectSlider1.setValue(processor.effectParam1->getValue(), dontSendNotification);
+    outputGainSlider.setValue(processor.outputGainParam->getValue(), dontSendNotification);
 }
 
 void BitCrusherAudioProcessorEditor::sliderValueChanged (Slider* sliderThatHasChanged){
-    
     // Test which slider was updated (if more than one), and then update our processor
     // THROUGH THE HOST. This keep automation lanes in sync with us.
-    if (sliderThatHasChanged == &gainSlider) {
-        processor.gainParam->beginChangeGesture();
-        processor.gainParam->setValueNotifyingHost(sliderThatHasChanged->getValue());
-        processor.gainParam->endChangeGesture();
+    if (sliderThatHasChanged == &inputGainSlider) {
+        processor.inputGainParam->beginChangeGesture();
+        processor.inputGainParam->setValueNotifyingHost(sliderThatHasChanged->getValue());
+        processor.inputGainParam->endChangeGesture();
+    }
+    else if (sliderThatHasChanged == &outputGainSlider) {
+        processor.outputGainParam->beginChangeGesture();
+        processor.outputGainParam->setValueNotifyingHost(sliderThatHasChanged->getValue());
+        processor.outputGainParam->endChangeGesture();
+    }
+    else if (sliderThatHasChanged == &effectSlider1) {
+        processor.effectParam1->beginChangeGesture();
+        processor.effectParam1->setValueNotifyingHost(sliderThatHasChanged->getValue());
+        processor.effectParam1->endChangeGesture();
     }
     
-    else if (sliderThatHasChanged == &effectSlider) {
-        processor.effectParam->beginChangeGesture();
-        processor.effectParam->setValueNotifyingHost(sliderThatHasChanged->getValue());
-        processor.effectParam->endChangeGesture();
+}
+
+void BitCrusherAudioProcessorEditor::buttonClicked (Button* buttonThatHasBeenClicked) {
+    //check to see what button was clicked
+    if (buttonThatHasBeenClicked == &holdRadio) {
+        processor.effectSelectParam->setValue(SAMPLE_HOLDER);
+        holdRadio.setToggleState(true, dontSendNotification);
+    }
+    else if (buttonThatHasBeenClicked == &rectifyRadio) {
+        processor.effectSelectParam->setValue(RECTIFY_DISTORTION);
+        rectifyRadio.setToggleState(true, dontSendNotification);
+    }
+    else if (buttonThatHasBeenClicked == &clipRadio) {
+        processor.effectSelectParam->setValue(CLIP_DISTORTION);
+        clipRadio.setToggleState(true, dontSendNotification);
+    }
+    else if (buttonThatHasBeenClicked == &spaceRadio) {
+        processor.effectSelectParam->setValue(SPACE_DISTORTION);
+        spaceRadio.setToggleState(true, dontSendNotification);
     }
     
 }

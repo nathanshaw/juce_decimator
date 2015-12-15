@@ -11,6 +11,13 @@
               pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="4.0.1">
   <MAINGROUP id="ZOnmPK" name="BitCrusher">
     <GROUP id="{F98B38E7-4957-C017-B664-95745E5E0512}" name="Source">
+      <FILE id="NbmvSq" name="GlitchKnob1.png" compile="0" resource="1" file="Resources/GlitchKnob1.png"/>
+      <FILE id="hRuJJw" name="GlitchKnob2.png" compile="0" resource="1" file="Resources/GlitchKnob2.png"/>
+      <FILE id="zNOIRe" name="BlackKnob.png" compile="0" resource="1" file="Resources/BlackKnob.png"/>
+      <FILE id="vfOcfH" name="CustomLookAndFeel.cpp" compile="1" resource="0"
+            file="Source/CustomLookAndFeel.cpp"/>
+      <FILE id="M7HsjR" name="CustomLookAndFeel.h" compile="0" resource="0"
+            file="Source/CustomLookAndFeel.h"/>
       <FILE id="rc0RBN" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="CpNt5O" name="PluginProcessor.h" compile="0" resource="0"
