@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../Source/PluginProcessor.cpp"
-            timestampString = "471859089.109336"
+            timestampString = "471931615.364029"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "236"
-            endingLineNumber = "236"
+            startingLineNumber = "220"
+            endingLineNumber = "220"
             landmarkName = "BitCrusherAudioProcessor::getStateInformation (MemoryBlock&amp; destData)"
             landmarkType = "5">
          </BreakpointContent>
@@ -42,13 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../Source/PluginEditor.cpp"
-            timestampString = "471856949.059664"
+            timestampString = "471931615.364029"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "193"
-            endingLineNumber = "193"
-            landmarkName = "BitCrusherAudioProcessorEditor::buttonClicked (Button* buttonThatHasBeenClicked)"
-            landmarkType = "5">
+            startingLineNumber = "202"
+            endingLineNumber = "202">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -58,27 +56,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../Source/PluginEditor.cpp"
-            timestampString = "471856949.059664"
+            timestampString = "471931615.364029"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "171"
-            endingLineNumber = "171"
-            landmarkName = "BitCrusherAudioProcessorEditor::sliderValueChanged (Slider* sliderThatHasChanged)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../Source/PluginEditor.cpp"
-            timestampString = "471856949.059664"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "65"
-            endingLineNumber = "65"
+            startingLineNumber = "69"
+            endingLineNumber = "69"
             landmarkName = "BitCrusherAudioProcessorEditor::BitCrusherAudioProcessorEditor (BitCrusherAudioProcessor&amp; p)"
             landmarkType = "5">
          </BreakpointContent>

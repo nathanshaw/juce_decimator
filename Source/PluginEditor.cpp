@@ -21,9 +21,9 @@ BitCrusherAudioProcessorEditor::BitCrusherAudioProcessorEditor (BitCrusherAudioP
         effectSlider1("Effect1"),
         holdRadio("Hold"),
         clipRadio("Clip"),
-        rectifyRadio("Rectify"),
+        halfRectifyRadio("HalfRect"),
+        fullRectifyRadio("FullRect"),
         spaceRadio("Space")
-        // effectSlider2("Effect2")
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -32,22 +32,26 @@ BitCrusherAudioProcessorEditor::BitCrusherAudioProcessorEditor (BitCrusherAudioP
     
     // processor.addChangeListener(this);
     // ------------------ create some buttons -------------------------------
-    addAndMakeVisible(rectifyRadio);
+    addAndMakeVisible(halfRectifyRadio);
+    addAndMakeVisible(fullRectifyRadio);
     addAndMakeVisible(clipRadio);
     addAndMakeVisible(holdRadio);
     addAndMakeVisible(spaceRadio);
     
-    rectifyRadio.setRadioGroupId(1);
+    fullRectifyRadio.setRadioGroupId(1);
+    halfRectifyRadio.setRadioGroupId(1);
     clipRadio.setRadioGroupId(1);
     holdRadio.setRadioGroupId(1);
     spaceRadio.setRadioGroupId(1);
     
-    rectifyRadio.setBoundsRelative(0.05, 0.76, 0.2, 0.14);
-    holdRadio.setBoundsRelative(0.25, 0.76, 0.2, 0.14);
-    clipRadio.setBoundsRelative(0.45, 0.76, 0.2, 0.14);
-    spaceRadio.setBoundsRelative(0.65, 0.76, 0.2, 0.14);
+    halfRectifyRadio.setBoundsRelative(0.05, 0.76, 0.1, 0.14);
+    fullRectifyRadio.setBoundsRelative(0.15, 0.76, 0.1, 0.14);
+    holdRadio.setBoundsRelative(0.25, 0.76, 0.1, 0.14);
+    clipRadio.setBoundsRelative(0.35, 0.76, 0.1, 0.14);
+    spaceRadio.setBoundsRelative(0.45, 0.76, 0.1, 0.14);
     
-    rectifyRadio.addListener(this);
+    halfRectifyRadio.addListener(this);
+    fullRectifyRadio.addListener(this);
     holdRadio.addListener(this);
     clipRadio.addListener(this);
     spaceRadio.addListener(this);
@@ -95,7 +99,7 @@ BitCrusherAudioProcessorEditor::BitCrusherAudioProcessorEditor (BitCrusherAudioP
     outputGainSliderLabel.setJustificationType(Justification::centredTop);
     addAndMakeVisible(outputGainSliderLabel);
     
-    // addMouseListener(this, true);
+
     // Manually call the timerCallback() once so that the sliders and UI updates
     // before the window is open. This is a trick.
     timerCallback();
@@ -110,41 +114,9 @@ BitCrusherAudioProcessorEditor::~BitCrusherAudioProcessorEditor()
 //==============================================================================
 void BitCrusherAudioProcessorEditor::paint (Graphics& g)
 {
-    //g.fillAll (Colours::white);
-    //g.setColour (Colours::black);
-    // g.setFont (15.0f);
-    // g.drawFittedText ("Bit Crushing Baby!!!", getLocalBounds(), Justification::centred, 1);
-    
-    // ------------- EVERYTHING FROM HERE ON OUT I JACKED FROM JAKE --------------
-    
     g.fillAll (Colour(0,0,0));
-    g.setGradientFill(ColourGradient(Colour(255,255,255), 0, 0, Colour(211,211,211), 600, 0, false));
-    //top rectangle
-    //g.fillRoundedRectangle(0,6,600,8,2);
-    /*
-    g.setGradientFill(ColourGradient(Colour(255,255,255), 0, 280, Colour(211,211,211), 300, 280, false));
-    //lower rectangle & text
-    //first half
-    g.fillRoundedRectangle(0,263,370,8,2);
-    //text
-    g.setColour(Colour(uint8(211),uint8(211),uint8(211),float(1)));
-    g.setFont (Font("Arial", 10, Font::bold + Font::italic));
-    g.drawSingleLineText(" Mumu[Audio] | MNML Granular | CalArts MTIID", 370, 270);
-    //second rect
-    g.fillRoundedRectangle(572,263,26,8,2);
-    
-    Image Logo = ImageCache::getFromMemory(BinaryData::MumuLight_png, BinaryData::MumuLight_pngSize);
-    //g.drawImageAt(Logo, 10, 40);
-    g.drawImage(Logo, 10, 218, 65, 35, 0, 0, 115, 65);
-    Image MTIID = ImageCache::getFromMemory(BinaryData::MTIID_png, BinaryData::MTIID_pngSize);
-    //g.drawImageAt(Logo, 10, 40);
-    g.drawImage(MTIID, 83, 220, 85, 30, 0, 0, 190, 95);
-    
-    //vert
-    g.fillRoundedRectangle(171,208,1,55,0);
-    //horizontal
-    g.fillRoundedRectangle(0,208,600,1,0);
-     */
+    g.setGradientFill(ColourGradient(
+            Colour(255,255,255), 0, 0, Colour(211,211,211), 600, 0, false));
 }
 
 void BitCrusherAudioProcessorEditor::resized()
@@ -155,19 +127,12 @@ void BitCrusherAudioProcessorEditor::resized()
 }
 
 void BitCrusherAudioProcessorEditor::timerCallback(){
-    // Update the slider's value polling from the gainParam in our processor
-    // whenever this callback gets called. This is to make sure the GUI updates
-    // when automation is drawn in the host. However, because of this, we DO NOT
-    // send a change notification that the slider updated, because that would call
-    // sliderValueChanged, which tells the host to update, creating a feedback look.
     inputGainSlider.setValue(processor.inputGainParam->getValue(), dontSendNotification);
     effectSlider1.setValue(processor.effectParam1->getValue(), dontSendNotification);
     outputGainSlider.setValue(processor.outputGainParam->getValue(), dontSendNotification);
 }
 
 void BitCrusherAudioProcessorEditor::sliderValueChanged (Slider* sliderThatHasChanged){
-    // Test which slider was updated (if more than one), and then update our processor
-    // THROUGH THE HOST. This keep automation lanes in sync with us.
     if (sliderThatHasChanged == &inputGainSlider) {
         processor.inputGainParam->beginChangeGesture();
         processor.inputGainParam->setValueNotifyingHost(sliderThatHasChanged->getValue());
@@ -192,9 +157,13 @@ void BitCrusherAudioProcessorEditor::buttonClicked (Button* buttonThatHasBeenCli
         processor.effectSelectParam->setValue(SAMPLE_HOLDER);
         holdRadio.setToggleState(true, dontSendNotification);
     }
-    else if (buttonThatHasBeenClicked == &rectifyRadio) {
-        processor.effectSelectParam->setValue(RECTIFY_DISTORTION);
-        rectifyRadio.setToggleState(true, dontSendNotification);
+    else if (buttonThatHasBeenClicked == &halfRectifyRadio) {
+        processor.effectSelectParam->setValue(HALF_RECTIFY);
+        halfRectifyRadio.setToggleState(true, dontSendNotification);
+    }
+    else if (buttonThatHasBeenClicked == &fullRectifyRadio) {
+        processor.effectSelectParam->setValue(FULL_RECTIFY);
+        fullRectifyRadio.setToggleState(true, dontSendNotification);
     }
     else if (buttonThatHasBeenClicked == &clipRadio) {
         processor.effectSelectParam->setValue(CLIP_DISTORTION);
@@ -204,5 +173,4 @@ void BitCrusherAudioProcessorEditor::buttonClicked (Button* buttonThatHasBeenCli
         processor.effectSelectParam->setValue(SPACE_DISTORTION);
         spaceRadio.setToggleState(true, dontSendNotification);
     }
-    
 }

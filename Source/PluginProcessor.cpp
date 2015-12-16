@@ -172,18 +172,19 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
                 buffer.applyGain(inGain*(2 - factor));
             }
         }
+        else if ( mode == HALF_RECTIFY) {
+            for (int i =0; i < numSamples; i++) {
+                if (channelData[i] < 0) {
+                    channelData[i] = (1 - effect) * channelData[i];
+                }
+            }
+        }
         
-        else if ( mode == RECTIFY_DISTORTION){
-            for (int i = 0; i < numSamples; i ++){
+        else if ( mode == FULL_RECTIFY){
+            for (int i = 0; i < numSamples; i++){
                 // if the sample is below 0 flip it
                 if (channelData[i] < 0){
-                    channelData[i] *= -1;
-                }
-                else if (channelData[i] > 0){
-                    channelData[i] *= 1;
-                }
-                else{
-                    channelData[i] = channelData[i];
+                    channelData[i] *= -effect;
                 }
             }
         }

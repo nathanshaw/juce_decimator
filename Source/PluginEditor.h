@@ -29,7 +29,8 @@ public:
 
 private:
     TextButton holdRadio;
-    TextButton rectifyRadio;
+    TextButton halfRectifyRadio;
+    TextButton fullRectifyRadio;
     TextButton clipRadio;
     TextButton spaceRadio;
     // Create a slider objects

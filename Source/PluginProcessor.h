@@ -5,8 +5,9 @@
 
 #define SAMPLE_HOLDER 0
 #define CLIP_DISTORTION 1
-#define RECTIFY_DISTORTION 2
 #define SPACE_DISTORTION 3
+#define FULL_RECTIFY 4
+#define HALF_RECTIFY 5
 
 //==============================================================================
 /**
