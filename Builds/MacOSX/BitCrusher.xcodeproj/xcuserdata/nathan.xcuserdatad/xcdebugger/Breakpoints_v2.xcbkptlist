@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../Source/PluginProcessor.cpp"
-            timestampString = "472411605.769186"
+            timestampString = "472412367.50728"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "317"
-            endingLineNumber = "317"
+            startingLineNumber = "319"
+            endingLineNumber = "319"
             landmarkName = "BitCrusherAudioProcessor::getStateInformation (MemoryBlock&amp; destData)"
             landmarkType = "5">
          </BreakpointContent>

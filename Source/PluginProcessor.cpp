@@ -114,7 +114,8 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
 {
     
     const int numSamples = buffer.getNumSamples();
-    const int maxAmplitude = buffer.getMagnitude(0, numSamples);
+    // this does not seem to work
+    const float maxAmplitude = buffer.getMagnitude(0, numSamples);
     const float inGain = inputGainParam->getValue();
     const float outGain = outputGainParam->getValue();
     const float effect = effectParam1->getValue();
@@ -239,6 +240,7 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
         }
         
         else if ( mode == FUZZ1){
+            std::cout << maxAmplitude << std::endl;
             for (int i = 0; i < numSamples; i++) {
                 if (channelData[i] > 0.66 * maxAmplitude) {
                     channelData[i] = maxAmplitude;
@@ -249,7 +251,7 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
                 else if (channelData[i] > 0.33 * maxAmplitude) {
                     channelData[i] = (3 - pow(2 - 3 * channelData[i], 2))/3;
                 }
-                else if (channelData[i] < 0.33 *maxAmplitude) {
+                else if (channelData[i] < -0.33 *maxAmplitude) {
                     channelData[i] = (3 - pow(2 - 3 * channelData[i], 2))/3;
                 }
                 else {
@@ -261,16 +263,16 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
             
             // this is more of an overdrive than a fuzz
             for (int i = 0; i < numSamples; i++) {
-                if (channelData[i] > 0.66 * maxAmplitude) {
-                    channelData[i] = maxAmplitude;
+                if (channelData[i] > 0.66) {
+                    channelData[i] = 1;
                 }
-                else if (channelData[i] < -0.66 * maxAmplitude){
-                    channelData[i] = -maxAmplitude;
+                else if (channelData[i] < -0.66){
+                    channelData[i] = -1;
                 }
-                else if (channelData[i] > 0.33 * maxAmplitude) {
+                else if (channelData[i] > 0.33) {
                     channelData[i] = (3 - pow(2 - 3 * channelData[i], 2))/3;
                 }
-                else if (channelData[i] < 0.33 *maxAmplitude) {
+                else if (channelData[i] < -0.33) {
                     channelData[i] = (3 - pow(2 - 3 * channelData[i], 2))/3;
                 }
                 else {
@@ -282,7 +284,7 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
             //
             for (int i = 0; i < numSamples; i++){
                 // found this formula in a blog somehwhere, no idea what is going on...
-                channelData[i] = (channelData[i]/std::abs(channelData[i])) * (1 - pow(e, (pow(channelData[i],(2/std::abs(channelData[i]))))));
+                channelData[i] = (channelData[i]/std::abs(channelData[i])) * (1 - pow(e + effect, (pow(channelData[i],(2/std::abs(channelData[i]))))));
             }
         }
         else if (mode == DISTORTION2) {
