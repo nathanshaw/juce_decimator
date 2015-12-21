@@ -133,25 +133,28 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
         
         float* channelData = buffer.getWritePointer (channel);
         
-        if (mode == SAMPLE_HOLDER || mode == SAMPLE_HOLDER_INT){
-            bool interpolation = false;
-            if (mode == SAMPLE_HOLDER_INT){
-                interpolation = true;
-            }
-            
+        if (mode == SAMPLE_HOLDER){
             int iFactor = (int)(effect * effect * numSamples * 0.35);
             
             for (int i = 0; i < numSamples; i = i + iFactor){
                 float delta = (channelData[i] - channelData[i + iFactor])/iFactor;
 
                 for (int j = 0; j < iFactor; j++){
-                    
-                    if (interpolation){
-                        channelData[i+j] = channelData[i] + delta*j;
-                    }
-                    else{
-                        channelData[i+j] = channelData[i];
-                    }
+                    channelData[i+j] = channelData[i];
+                }
+            }
+        }
+        
+        else if (mode == SAMPLE_HOLDER_INT){
+            
+            int iFactor = (int)(effect * effect * numSamples * 0.35);
+            
+            for (int i = 0; i < numSamples; i = i + iFactor){
+                
+                float delta = (channelData[i] - channelData[i + iFactor])/iFactor;
+                
+                for (int j = 0; j < iFactor; j++){
+                    channelData[i+j] = channelData[i] + delta*j;
                 }
             }
         }
@@ -236,11 +239,13 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
                         channelData[i] = -maxAmplitude;
                     }
                 }
+                else {
+                    channelData[i] = channelData[i] * channelData[i];
+                }
             }
         }
         
         else if ( mode == FUZZ1){
-            std::cout << maxAmplitude << std::endl;
             for (int i = 0; i < numSamples; i++) {
                 if (channelData[i] > 0.66 * maxAmplitude) {
                     channelData[i] = maxAmplitude;
@@ -284,13 +289,13 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
             //
             for (int i = 0; i < numSamples; i++){
                 // found this formula in a blog somehwhere, no idea what is going on...
-                channelData[i] = (channelData[i]/std::abs(channelData[i])) * (1 - pow(e + effect, (pow(channelData[i],(2/std::abs(channelData[i]))))));
+                channelData[i] = (channelData[i]/std::abs(channelData[i])) * (1 - pow(e - effect, (pow(channelData[i],(2/std::abs(channelData[i]))))));
             }
         }
         else if (mode == DISTORTION2) {
             for (int i = 0; i < numSamples; i++){
-                // found this formula in a blog somehwhere, no idea what is going on...
-                channelData[i] = (channelData[i]/std::abs(channelData[i])) * (1 - pow(e - effect, (pow(channelData[i],(2/std::abs(channelData[i]))))));
+                // common nonlinear equasion for simulating distortion and fuzz
+                channelData[i] = (channelData[i]/std::abs(channelData[i])) * (1 - pow(e, effect*pow(channelData[i], 2)));
             }
         }
         else if (mode == CLEAN) {
