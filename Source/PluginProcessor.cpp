@@ -114,13 +114,15 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
 {
     
     const int numSamples = buffer.getNumSamples();
+    const int maxAmplitude = buffer.getMagnitude(0, numSamples);
     const float inGain = inputGainParam->getValue();
     const float outGain = outputGainParam->getValue();
     const float effect = effectParam1->getValue();
     const int mode = effectSelectParam->getValue();
     
-    for (int i = getNumInputChannels(); i < getNumOutputChannels(); ++i)
+    for (int i = getNumInputChannels(); i < getNumOutputChannels(); ++i) {
         buffer.clear (i, 0, numSamples);
+    }
     
     for (int channel = 0; channel < getNumInputChannels(); ++channel)
     {
@@ -138,10 +140,13 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
             
             int iFactor = (int)(effect * effect * numSamples * 0.35);
             
-            for (int i = iFactor; i < numSamples; i = i + iFactor){
+            for (int i = 0; i < numSamples; i = i + iFactor){
+                float delta = (channelData[i] - channelData[i + iFactor])/iFactor;
+
                 for (int j = 0; j < iFactor; j++){
+                    
                     if (interpolation){
-                        channelData[i+j] = ((channelData[i] * j/iFactor) + (1 - channelData[i + iFactor] * j/iFactor)) * 0.5;
+                        channelData[i+j] = channelData[i] + delta*j;
                     }
                     else{
                         channelData[i+j] = channelData[i];
@@ -149,16 +154,17 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
                 }
             }
         }
+        
         else if ( mode == CLIP_DISTORTION){
             float factor = 1 - effect;
-            factor = factor * factor * factor;
-            
-            if (factor < 0.01)
-            {
-                factor = 0.01;
+            factor = pow(factor, 3);
+            // make sure our factor is not too small
+            if (factor < 0.005){factor = 0.005;};
+            // make sure we keep the gain constant by utalizing our maxAmplitude
+            float scaler;
+            if (factor < maxAmplitude){
+                scaler = maxAmplitude/factor;
             }
- 
-            // buffer.applyGain(2 - factor);
 
             for (int i = 0; i < numSamples; i++){
                 
@@ -168,17 +174,8 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
                 else if (channelData[i] < -factor){
                     channelData[i] = -factor;
                 }
+                channelData[i] = channelData[i] * scaler;
             }
-            // if factor is 0.2 we need to multiply all our samples by 5 to scale back up to 1.
-            
-            /*
-            if (effect > 0.7){
-                buffer.applyGain(inGain*(3.6 - factor));
-            }
-            else{
-                buffer.applyGain(inGain*(2 - factor));
-            }
-            */
             
         }
         else if (mode == HARD_CLIP_DISTORTION) {
@@ -214,15 +211,14 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
             
             for (int i = 0; i < numSamples; i ++){
                 if (channelData[i] < 1 - effect ) {
-                    channelData[i] = channelData[i] * 2;
-                }
-                else if (channelData[i] )
+                    channelData[i] = channelData[i] * (1 + 2 * effect);
                 
-                if (channelData[i] > 1) {
-                    channelData[i] = 1;
-                }
-                else if (channelData[i] < -1) {
-                    channelData[i] = -1;
+                    if (channelData[i] > maxAmplitude) {
+                        channelData[i] = maxAmplitude;
+                    }
+                    else if (channelData[i] < -maxAmplitude) {
+                        channelData[i] = -maxAmplitude;
+                    }
                 }
             }
         }
@@ -231,22 +227,56 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
             for (int i = 0; i < numSamples; i ++){
                 // if signal is within threshold
                 if (channelData[i] < 1 - effect && channelData[i] > effect - 1) {
-                    channelData[i] = channelData[i] * 2;
-                    if (channelData[i] > 1) {
-                        channelData[i] = 1;
+                    channelData[i] = channelData[i] * 5;
+                    if (channelData[i] > maxAmplitude) {
+                        channelData[i] = maxAmplitude;
                     }
-                    else if (channelData[i] < -1) {
-                        channelData[i] = -1;
+                    else if (channelData[i] < -maxAmplitude) {
+                        channelData[i] = -maxAmplitude;
                     }
                 }
             }
         }
         
         else if ( mode == FUZZ1){
-            //
+            for (int i = 0; i < numSamples; i++) {
+                if (channelData[i] > 0.66 * maxAmplitude) {
+                    channelData[i] = maxAmplitude;
+                }
+                else if (channelData[i] < -0.66 * maxAmplitude){
+                    channelData[i] = -maxAmplitude;
+                }
+                else if (channelData[i] > 0.33 * maxAmplitude) {
+                    channelData[i] = (3 - pow(2 - 3 * channelData[i], 2))/3;
+                }
+                else if (channelData[i] < 0.33 *maxAmplitude) {
+                    channelData[i] = (3 - pow(2 - 3 * channelData[i], 2))/3;
+                }
+                else {
+                    channelData[i] = channelData[i]*2;
+                }
+            }
         }
         else if (mode == FUZZ2) {
-            //
+            
+            // this is more of an overdrive than a fuzz
+            for (int i = 0; i < numSamples; i++) {
+                if (channelData[i] > 0.66 * maxAmplitude) {
+                    channelData[i] = maxAmplitude;
+                }
+                else if (channelData[i] < -0.66 * maxAmplitude){
+                    channelData[i] = -maxAmplitude;
+                }
+                else if (channelData[i] > 0.33 * maxAmplitude) {
+                    channelData[i] = (3 - pow(2 - 3 * channelData[i], 2))/3;
+                }
+                else if (channelData[i] < 0.33 *maxAmplitude) {
+                    channelData[i] = (3 - pow(2 - 3 * channelData[i], 2))/3;
+                }
+                else {
+                    channelData[i] = channelData[i]*2;
+                }
+            }
         }
         else if (mode == DISTORTION1) {
             //

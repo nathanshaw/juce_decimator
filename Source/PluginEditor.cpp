@@ -37,7 +37,6 @@ BitCrusherAudioProcessorEditor::BitCrusherAudioProcessorEditor (BitCrusherAudioP
     // editor's size to whatever you need it to be.
     setSize (575, 250);
     LookAndFeel::setDefaultLookAndFeel(&myLookAndFeel);
-    // processor.addChangeListener(this);
     
     // ------------------ create some buttons -------------------------------
     addAndMakeVisible(halfRectifyRadio);
@@ -80,7 +79,7 @@ BitCrusherAudioProcessorEditor::BitCrusherAudioProcessorEditor (BitCrusherAudioP
     fuzzRadio2.setBoundsRelative(0.42, 0.8, 0.1, 0.14);
     distortionRadio1.setBoundsRelative(0.52, 0.66, 0.1, 0.14);
     distortionRadio2.setBoundsRelative(0.52, 0.8, 0.1, 0.14);
-    cleanRadio.setBoundsRelative(0.7, 0.70, 0.15, 0.2);
+    cleanRadio.setBoundsRelative(0.68, 0.70, 0.14, 0.18);
     
     halfRectifyRadio.addListener(this);
     fullRectifyRadio.addListener(this);
@@ -247,6 +246,7 @@ void BitCrusherAudioProcessorEditor::buttonClicked (Button* buttonThatHasBeenCli
         distortionRadio2.setToggleState(true, dontSendNotification);
     }
     else if (buttonThatHasBeenClicked == &cleanRadio) {
+        
         processor.effectSelectParam->setValue(CLEAN);
         cleanRadio.setToggleState(true, dontSendNotification);
     }
