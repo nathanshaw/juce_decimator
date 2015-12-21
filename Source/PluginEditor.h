@@ -28,11 +28,19 @@ public:
     void timerCallback() override;
 
 private:
+    TextButton cleanRadio;
     TextButton holdRadio;
+    TextButton holdIntRadio;
     TextButton halfRectifyRadio;
     TextButton fullRectifyRadio;
     TextButton clipRadio;
-    TextButton spaceRadio;
+    TextButton hardClipRadio;
+    TextButton spaceRadio1;
+    TextButton spaceRadio2;
+    TextButton fuzzRadio1;
+    TextButton fuzzRadio2;
+    TextButton distortionRadio1;
+    TextButton distortionRadio2;
     // Create a slider objects
     Slider inputGainSlider;
     Slider outputGainSlider;

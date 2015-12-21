@@ -125,11 +125,17 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
     for (int channel = 0; channel < getNumInputChannels(); ++channel)
     {
         buffer.applyGain(inGain);
+        // use following code to ensure we dont apply uneeded gain
+        // get max amplitude of samples within sample block
+        
         float* channelData = buffer.getWritePointer (channel);
         
-        if (mode == SAMPLE_HOLDER){
-            //   map this to a knob
-            int interpolation = 0;
+        if (mode == SAMPLE_HOLDER || mode == SAMPLE_HOLDER_INT){
+            bool interpolation = false;
+            if (mode == SAMPLE_HOLDER_INT){
+                interpolation = true;
+            }
+            
             int iFactor = (int)(effect * effect * numSamples * 0.35);
             
             for (int i = iFactor; i < numSamples; i = i + iFactor){
@@ -152,11 +158,10 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
                 factor = 0.01;
             }
  
-            buffer.applyGain(2 - factor);
+            // buffer.applyGain(2 - factor);
 
             for (int i = 0; i < numSamples; i++){
                 
-              
                 if (channelData[i] > factor){
                     channelData[i] = factor;
                 }
@@ -164,14 +169,30 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
                     channelData[i] = -factor;
                 }
             }
+            // if factor is 0.2 we need to multiply all our samples by 5 to scale back up to 1.
             
+            /*
             if (effect > 0.7){
                 buffer.applyGain(inGain*(3.6 - factor));
             }
             else{
                 buffer.applyGain(inGain*(2 - factor));
             }
+            */
+            
         }
+        else if (mode == HARD_CLIP_DISTORTION) {
+            float mEffect = 1 - effect;
+            for (int i = 0; i < numSamples; i++){
+                if (channelData[i] > mEffect){
+                    channelData[i] = 1;
+                }
+                else if (channelData[i] < - mEffect){
+                    channelData[i] = -1;
+                }
+            }
+        }
+        
         else if ( mode == HALF_RECTIFY) {
             for (int i =0; i < numSamples; i++) {
                 if (channelData[i] < 0) {
@@ -189,13 +210,59 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
             }
         }
         
-        else if ( mode == SPACE_DISTORTION) {
+        else if ( mode == SPACE_DISTORTION1) {
             
             for (int i = 0; i < numSamples; i ++){
                 if (channelData[i] < 1 - effect ) {
                     channelData[i] = channelData[i] * 2;
                 }
+                else if (channelData[i] )
+                
+                if (channelData[i] > 1) {
+                    channelData[i] = 1;
+                }
+                else if (channelData[i] < -1) {
+                    channelData[i] = -1;
+                }
             }
+        }
+        
+        else if ( mode == SPACE_DISTORTION2) {
+            for (int i = 0; i < numSamples; i ++){
+                // if signal is within threshold
+                if (channelData[i] < 1 - effect && channelData[i] > effect - 1) {
+                    channelData[i] = channelData[i] * 2;
+                    if (channelData[i] > 1) {
+                        channelData[i] = 1;
+                    }
+                    else if (channelData[i] < -1) {
+                        channelData[i] = -1;
+                    }
+                }
+            }
+        }
+        
+        else if ( mode == FUZZ1){
+            //
+        }
+        else if (mode == FUZZ2) {
+            //
+        }
+        else if (mode == DISTORTION1) {
+            //
+            for (int i = 0; i < numSamples; i++){
+                // found this formula in a blog somehwhere, no idea what is going on...
+                channelData[i] = (channelData[i]/std::abs(channelData[i])) * (1 - pow(e, (pow(channelData[i],(2/std::abs(channelData[i]))))));
+            }
+        }
+        else if (mode == DISTORTION2) {
+            for (int i = 0; i < numSamples; i++){
+                // found this formula in a blog somehwhere, no idea what is going on...
+                channelData[i] = (channelData[i]/std::abs(channelData[i])) * (1 - pow(e - effect, (pow(channelData[i],(2/std::abs(channelData[i]))))));
+            }
+        }
+        else if (mode == CLEAN) {
+            // nothing its clean
         }
         buffer.applyGain(outGain);
     }

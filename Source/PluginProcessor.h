@@ -4,11 +4,18 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 
 #define SAMPLE_HOLDER 0
-#define CLIP_DISTORTION 1
-#define SPACE_DISTORTION 3
-#define FULL_RECTIFY 4
-#define HALF_RECTIFY 5
-
+#define SAMPLE_HOLDER_INT 1
+#define CLIP_DISTORTION 2
+#define HARD_CLIP_DISTORTION 3
+#define SPACE_DISTORTION1 4
+#define SPACE_DISTORTION2 5
+#define HALF_RECTIFY 6
+#define FULL_RECTIFY 7
+#define FUZZ1 8
+#define FUZZ2 9
+#define DISTORTION1 10
+#define DISTORTION2 11
+#define CLEAN 12
 //==============================================================================
 /**
 */
@@ -67,6 +74,7 @@ private:
     // for keeping track of different modes
     int mode;
     float random;
+    const float e = 2.71828182845904523536;
 };
 
 

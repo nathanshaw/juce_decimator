@@ -20,41 +20,81 @@ BitCrusherAudioProcessorEditor::BitCrusherAudioProcessorEditor (BitCrusherAudioP
         outputGainSlider("Output Gain"),
         effectSlider1("Effect1"),
         holdRadio("Hold"),
+        holdIntRadio("HoldInt"),
         clipRadio("Clip"),
+        hardClipRadio("HardClip"),
         halfRectifyRadio("HalfRect"),
         fullRectifyRadio("FullRect"),
-        spaceRadio("Space")
+        spaceRadio1("Space1"),
+        spaceRadio2("Space2"),
+        fuzzRadio1("Fuzz1"),
+        fuzzRadio2("Fuzz2"),
+        distortionRadio1("Distortion1"),
+        distortionRadio2("Distortion2"),
+        cleanRadio("Clean")
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (600, 250);
+    setSize (575, 250);
     LookAndFeel::setDefaultLookAndFeel(&myLookAndFeel);
-    
     // processor.addChangeListener(this);
+    
     // ------------------ create some buttons -------------------------------
     addAndMakeVisible(halfRectifyRadio);
     addAndMakeVisible(fullRectifyRadio);
     addAndMakeVisible(clipRadio);
+    addAndMakeVisible(hardClipRadio);
     addAndMakeVisible(holdRadio);
-    addAndMakeVisible(spaceRadio);
+    addAndMakeVisible(spaceRadio1);
+    addAndMakeVisible(spaceRadio2);
+    addAndMakeVisible(holdIntRadio);
+    addAndMakeVisible(fuzzRadio1);
+    addAndMakeVisible(fuzzRadio2);
+    addAndMakeVisible(distortionRadio1);
+    addAndMakeVisible(distortionRadio2);
+    addAndMakeVisible(cleanRadio);
     
     fullRectifyRadio.setRadioGroupId(1);
     halfRectifyRadio.setRadioGroupId(1);
     clipRadio.setRadioGroupId(1);
+    hardClipRadio.setRadioGroupId(1);
     holdRadio.setRadioGroupId(1);
-    spaceRadio.setRadioGroupId(1);
+    holdIntRadio.setRadioGroupId(1);
+    spaceRadio1.setRadioGroupId(1);
+    spaceRadio2.setRadioGroupId(1);
+    fuzzRadio1.setRadioGroupId(1);
+    fuzzRadio2.setRadioGroupId(1);
+    distortionRadio1.setRadioGroupId(1);
+    distortionRadio2.setRadioGroupId(1);
+    cleanRadio.setRadioGroupId(1);
     
-    halfRectifyRadio.setBoundsRelative(0.05, 0.76, 0.1, 0.14);
-    fullRectifyRadio.setBoundsRelative(0.15, 0.76, 0.1, 0.14);
-    holdRadio.setBoundsRelative(0.25, 0.76, 0.1, 0.14);
-    clipRadio.setBoundsRelative(0.35, 0.76, 0.1, 0.14);
-    spaceRadio.setBoundsRelative(0.45, 0.76, 0.1, 0.14);
+    halfRectifyRadio.setBoundsRelative(0.02, 0.66, 0.1, 0.14);
+    fullRectifyRadio.setBoundsRelative(0.02, 0.80, 0.1, 0.14);
+    holdRadio.setBoundsRelative(0.12, 0.66, 0.1, 0.14);
+    holdIntRadio.setBoundsRelative(0.12, 0.80, 0.1, 0.14);
+    clipRadio.setBoundsRelative(0.22, 0.66, 0.1, 0.14);
+    hardClipRadio.setBoundsRelative(0.22, 0.80, 0.1, 0.14);
+    spaceRadio1.setBoundsRelative(0.32, 0.66, 0.1, 0.14);
+    spaceRadio2.setBoundsRelative(0.32, 0.8, 0.1, 0.14);
+    fuzzRadio1.setBoundsRelative(0.42, 0.66, 0.1, 0.14);
+    fuzzRadio2.setBoundsRelative(0.42, 0.8, 0.1, 0.14);
+    distortionRadio1.setBoundsRelative(0.52, 0.66, 0.1, 0.14);
+    distortionRadio2.setBoundsRelative(0.52, 0.8, 0.1, 0.14);
+    cleanRadio.setBoundsRelative(0.7, 0.70, 0.15, 0.2);
     
     halfRectifyRadio.addListener(this);
     fullRectifyRadio.addListener(this);
     holdRadio.addListener(this);
+    holdIntRadio.addListener(this);
     clipRadio.addListener(this);
-    spaceRadio.addListener(this);
+    hardClipRadio.addListener(this);
+    spaceRadio1.addListener(this);
+    spaceRadio2.addListener(this);
+    fuzzRadio1.addListener(this);
+    fuzzRadio2.addListener(this);
+    distortionRadio1.addListener(this);
+    distortionRadio2.addListener(this);
+    cleanRadio.addListener(this);
     
     holdRadio.setToggleState(true, dontSendNotification);
     
@@ -157,6 +197,10 @@ void BitCrusherAudioProcessorEditor::buttonClicked (Button* buttonThatHasBeenCli
         processor.effectSelectParam->setValue(SAMPLE_HOLDER);
         holdRadio.setToggleState(true, dontSendNotification);
     }
+    else if (buttonThatHasBeenClicked == &holdIntRadio) {
+        processor.effectSelectParam->setValue(SAMPLE_HOLDER_INT);
+        holdIntRadio.setToggleState(true, dontSendNotification);
+    }
     else if (buttonThatHasBeenClicked == &halfRectifyRadio) {
         processor.effectSelectParam->setValue(HALF_RECTIFY);
         halfRectifyRadio.setToggleState(true, dontSendNotification);
@@ -169,8 +213,41 @@ void BitCrusherAudioProcessorEditor::buttonClicked (Button* buttonThatHasBeenCli
         processor.effectSelectParam->setValue(CLIP_DISTORTION);
         clipRadio.setToggleState(true, dontSendNotification);
     }
-    else if (buttonThatHasBeenClicked == &spaceRadio) {
-        processor.effectSelectParam->setValue(SPACE_DISTORTION);
-        spaceRadio.setToggleState(true, dontSendNotification);
+    else if (buttonThatHasBeenClicked == &hardClipRadio) {
+        processor.effectSelectParam->setValue(HARD_CLIP_DISTORTION);
+        hardClipRadio.setToggleState(true, dontSendNotification);
+    }
+    else if (buttonThatHasBeenClicked == &spaceRadio1) {
+        processor.effectSelectParam->setValue(SPACE_DISTORTION1);
+        spaceRadio1.setToggleState(true, dontSendNotification);
+    }
+    else if (buttonThatHasBeenClicked == &spaceRadio2) {
+        
+        processor.effectSelectParam->setValue(SPACE_DISTORTION2);
+        spaceRadio2.setToggleState(true, dontSendNotification);
+    }
+    else if (buttonThatHasBeenClicked == &fuzzRadio1) {
+        
+        processor.effectSelectParam->setValue(FUZZ1);
+        fuzzRadio1.setToggleState(true, dontSendNotification);
+    }
+    else if (buttonThatHasBeenClicked == &fuzzRadio2) {
+        
+        processor.effectSelectParam->setValue(FUZZ2);
+        fuzzRadio2.setToggleState(true, dontSendNotification);
+    }
+    else if (buttonThatHasBeenClicked == &distortionRadio1) {
+        
+        processor.effectSelectParam->setValue(DISTORTION1);
+        distortionRadio1.setToggleState(true, dontSendNotification);
+    }
+    else if (buttonThatHasBeenClicked == &distortionRadio2){
+        
+        processor.effectSelectParam->setValue(DISTORTION2);
+        distortionRadio2.setToggleState(true, dontSendNotification);
+    }
+    else if (buttonThatHasBeenClicked == &cleanRadio) {
+        processor.effectSelectParam->setValue(CLEAN);
+        cleanRadio.setToggleState(true, dontSendNotification);
     }
 }
