@@ -2,6 +2,8 @@
 #define PLUGINPROCESSOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "DistortionEffects.h"
+#include "DecimationEffects.h"
 
 #define SAMPLE_HOLDER 0
 #define SAMPLE_HOLDER_INT 1
@@ -76,6 +78,10 @@ private:
     int mode;
     float random;
     const float e = 2.71828182845904523536;
+    // instances of our actual effects processors :
+    Decimators = new;
+    Distorters = new;
+
 };
 
 

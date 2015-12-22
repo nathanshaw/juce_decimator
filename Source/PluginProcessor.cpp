@@ -140,6 +140,9 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
         
         switch (mode) {
             case SAMPLE_HOLDER:
+                channelData = Decimators.sampleHold(channelData);
+                break;
+                
                 
                 iFactor = (int)(effect * effect * numSamples * 0.35);
                 
@@ -148,10 +151,11 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
                         channelData[i+j] = channelData[i];
                     }
                 }
-                break;
-        
+                
         
             case SAMPLE_HOLDER_INT:
+                channelData = Decimators.sampleHoldInt(channelData);
+                
                 
                 iFactor = (int)(effect * effect * numSamples * 0.35);
                 
@@ -304,6 +308,7 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
                     channelData[i] = (channelData[i]/std::abs(channelData[i])) * (1 - pow(e, effect*pow(channelData[i], 2)));
                 }
                 break;
+                
             case CLEAN:
                 // nothing its clean
                 break;

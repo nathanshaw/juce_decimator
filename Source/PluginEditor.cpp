@@ -172,82 +172,96 @@ void BitCrusherAudioProcessorEditor::timerCallback(){
 }
 
 void BitCrusherAudioProcessorEditor::sliderValueChanged (Slider* sliderThatHasChanged){
-    if (sliderThatHasChanged == &inputGainSlider) {
-        processor.inputGainParam->beginChangeGesture();
-        processor.inputGainParam->setValueNotifyingHost(sliderThatHasChanged->getValue());
-        processor.inputGainParam->endChangeGesture();
-    }
-    else if (sliderThatHasChanged == &outputGainSlider) {
-        processor.outputGainParam->beginChangeGesture();
-        processor.outputGainParam->setValueNotifyingHost(sliderThatHasChanged->getValue());
-        processor.outputGainParam->endChangeGesture();
-    }
-    else if (sliderThatHasChanged == &effectSlider1) {
-        processor.effectParam1->beginChangeGesture();
-        processor.effectParam1->setValueNotifyingHost(sliderThatHasChanged->getValue());
-        processor.effectParam1->endChangeGesture();
-    }
     
+    switch (sliderThatHasChanged) {
+        
+        case &inputGainSlider:
+            processor.inputGainParam->beginChangeGesture();
+            processor.inputGainParam->setValueNotifyingHost(sliderThatHasChanged->getValue());
+            processor.inputGainParam->endChangeGesture();
+            break;
+            
+        case &outputGainSlider:
+            processor.outputGainParam->beginChangeGesture();
+            processor.outputGainParam->setValueNotifyingHost(sliderThatHasChanged->getValue());
+            processor.outputGainParam->endChangeGesture();
+            break;
+            
+        case &effectSlider1:
+            processor.effectParam1->beginChangeGesture();
+            processor.effectParam1->setValueNotifyingHost(sliderThatHasChanged->getValue());
+            processor.effectParam1->endChangeGesture();
+            break;
+    }
 }
 
 void BitCrusherAudioProcessorEditor::buttonClicked (Button* buttonThatHasBeenClicked) {
     //check to see what button was clicked
-    if (buttonThatHasBeenClicked == &holdRadio) {
-        processor.effectSelectParam->setValue(SAMPLE_HOLDER);
-        holdRadio.setToggleState(true, dontSendNotification);
-    }
-    else if (buttonThatHasBeenClicked == &holdIntRadio) {
-        processor.effectSelectParam->setValue(SAMPLE_HOLDER_INT);
-        holdIntRadio.setToggleState(true, dontSendNotification);
-    }
-    else if (buttonThatHasBeenClicked == &halfRectifyRadio) {
-        processor.effectSelectParam->setValue(HALF_RECTIFY);
-        halfRectifyRadio.setToggleState(true, dontSendNotification);
-    }
-    else if (buttonThatHasBeenClicked == &fullRectifyRadio) {
-        processor.effectSelectParam->setValue(FULL_RECTIFY);
-        fullRectifyRadio.setToggleState(true, dontSendNotification);
-    }
-    else if (buttonThatHasBeenClicked == &clipRadio) {
-        processor.effectSelectParam->setValue(CLIP_DISTORTION);
-        clipRadio.setToggleState(true, dontSendNotification);
-    }
-    else if (buttonThatHasBeenClicked == &hardClipRadio) {
-        processor.effectSelectParam->setValue(HARD_CLIP_DISTORTION);
-        hardClipRadio.setToggleState(true, dontSendNotification);
-    }
-    else if (buttonThatHasBeenClicked == &spaceRadio1) {
-        processor.effectSelectParam->setValue(SPACE_DISTORTION1);
-        spaceRadio1.setToggleState(true, dontSendNotification);
-    }
-    else if (buttonThatHasBeenClicked == &spaceRadio2) {
+    switch (buttonThatHasBeenClicked) {
         
-        processor.effectSelectParam->setValue(SPACE_DISTORTION2);
-        spaceRadio2.setToggleState(true, dontSendNotification);
-    }
-    else if (buttonThatHasBeenClicked == &fuzzRadio1) {
+        case &holdRadio:
+            processor.effectSelectParam->setValue(SAMPLE_HOLDER);
+            holdRadio.setToggleState(true, dontSendNotification);
+            break;
         
-        processor.effectSelectParam->setValue(FUZZ1);
-        fuzzRadio1.setToggleState(true, dontSendNotification);
-    }
-    else if (buttonThatHasBeenClicked == &fuzzRadio2) {
+        case &holdIntRadio:
+            processor.effectSelectParam->setValue(SAMPLE_HOLDER_INT);
+            holdIntRadio.setToggleState(true, dontSendNotification);
+            break;
         
-        processor.effectSelectParam->setValue(FUZZ2);
-        fuzzRadio2.setToggleState(true, dontSendNotification);
-    }
-    else if (buttonThatHasBeenClicked == &distortionRadio1) {
+        case &halfRectifyRadio:
+            processor.effectSelectParam->setValue(HALF_RECTIFY);
+            halfRectifyRadio.setToggleState(true, dontSendNotification);
+            break;
         
-        processor.effectSelectParam->setValue(DISTORTION1);
-        distortionRadio1.setToggleState(true, dontSendNotification);
-    }
-    else if (buttonThatHasBeenClicked == &distortionRadio2){
-        
-        processor.effectSelectParam->setValue(DISTORTION2);
-        distortionRadio2.setToggleState(true, dontSendNotification);
-    }
-    else if (buttonThatHasBeenClicked == &cleanRadio) {
-        
-        processor.effectSelectParam->setValue(CLEAN);
-        cleanRadio.setToggleState(true, dontSendNotification);
+        case &fullRectifyRadio:
+            processor.effectSelectParam->setValue(FULL_RECTIFY);
+            fullRectifyRadio.setToggleState(true, dontSendNotification);
+            break;
+            
+        case &clipRadio:
+            processor.effectSelectParam->setValue(CLIP_DISTORTION);
+            clipRadio.setToggleState(true, dontSendNotification);
+            break;
+            
+        case &hardClipRadio:
+            processor.effectSelectParam->setValue(HARD_CLIP_DISTORTION);
+            hardClipRadio.setToggleState(true, dontSendNotification);
+            break;
+            
+        case &spaceRadio1:
+            processor.effectSelectParam->setValue(SPACE_DISTORTION1);
+            spaceRadio1.setToggleState(true, dontSendNotification);
+            break;
+            
+        case &spaceRadio2:
+            processor.effectSelectParam->setValue(SPACE_DISTORTION2);
+            spaceRadio2.setToggleState(true, dontSendNotification);
+            break;
+            
+        case &fuzzRadio1:
+            processor.effectSelectParam->setValue(FUZZ1);
+            fuzzRadio1.setToggleState(true, dontSendNotification);
+            break;
+            
+        case &fuzzRadio2:
+            processor.effectSelectParam->setValue(FUZZ2);
+            fuzzRadio2.setToggleState(true, dontSendNotification);
+            break;
+            
+        case &distortionRadio1:
+            processor.effectSelectParam->setValue(DISTORTION1);
+            distortionRadio1.setToggleState(true, dontSendNotification);
+            break;
+            
+        case &distortionRadio2:
+            processor.effectSelectParam->setValue(DISTORTION2);
+            distortionRadio2.setToggleState(true, dontSendNotification);
+            break;
+            
+        case &cleanRadio:
+            processor.effectSelectParam->setValue(CLEAN);
+            cleanRadio.setToggleState(true, dontSendNotification);
+            break;
     }
 }

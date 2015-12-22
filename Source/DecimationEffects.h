@@ -11,7 +11,19 @@
 #ifndef DECIMATIONEFFECTS_H_INCLUDED
 #define DECIMATIONEFFECTS_H_INCLUDED
 
-class Decimators
+class Decimators {
+    
+public:
+    Decimators();
+    ~Decimators();
+    
+    float* sampleHold(float* channelSamples, int holdLength);
+    float* sampleHoldInt(float* channelSamples, int holdLength);
+    float* bitCrusher1(float* channelSamples, float bitDeph);
+    
+private:
+    
+};
 
 
 
