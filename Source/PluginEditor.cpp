@@ -153,9 +153,7 @@ BitCrusherAudioProcessorEditor::~BitCrusherAudioProcessorEditor()
 //==============================================================================
 void BitCrusherAudioProcessorEditor::paint (Graphics& g)
 {
-    g.fillAll (Colour(0,0,0));
-    g.setGradientFill(ColourGradient(
-            Colour(255,255,255), 0, 0, Colour(211,211,211), 600, 0, false));
+    g.fillAll (Colour(255,255,255));
 }
 
 void BitCrusherAudioProcessorEditor::resized()

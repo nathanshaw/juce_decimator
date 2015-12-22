@@ -43,12 +43,12 @@ private:
     TextButton distortionRadio2;
     // Create a slider objects
     Slider inputGainSlider;
-    Slider outputGainSlider;
+    Slider wetDrySlider;
     Slider effectSlider1;
     
     Label inputGainSliderLabel;
     Label effectSlider1Label;
-    Label outputGainSliderLabel;
+    Label wetDrySliderLabel;
     
     // for customixing my own look
     CustomLookAndFeel myLookAndFeel;

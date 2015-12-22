@@ -13,6 +13,7 @@ BitCrusherAudioProcessor::BitCrusherAudioProcessor()
     addParameter(outputGainParam = new AudioParameterFloat("outputGainParam", "outGain" , gainRange,1.0));
     addParameter(effectParam1 = new AudioParameterFloat("effectParam1", "Effect", effectRange, 100.0));
     addParameter(effectSelectParam = new AudioParameterFloat("selectParam", "Select", selectRange, 0));
+    addParameter(wetDryParam = new AudioParameterFloat("wetDryParam", "wetDry", gainRange, 0.5));
     
     random = ((float) rand()) / (float) RAND_MAX;
 }
