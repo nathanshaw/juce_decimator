@@ -17,7 +17,7 @@ BitCrusherAudioProcessorEditor::BitCrusherAudioProcessorEditor (BitCrusherAudioP
     : AudioProcessorEditor (&p),
         processor (p),
         inputGainSlider("Input Gain"),
-        outputGainSlider("Output Gain"),
+        wetDrySlider("Output Gain"),
         effectSlider1("Effect1"),
         holdRadio("Hold"),
         holdIntRadio("HoldInt"),
@@ -118,11 +118,11 @@ BitCrusherAudioProcessorEditor::BitCrusherAudioProcessorEditor (BitCrusherAudioP
     inputGainSlider.addListener(this);
     addAndMakeVisible(inputGainSlider);
     
-    outputGainSlider.setTextBoxStyle(Slider::NoTextBox, true, 100, 15);
-    outputGainSlider.setSliderStyle(Slider::Rotary);
-    outputGainSlider.setRange(0.5, 2.0);
-    outputGainSlider.addListener(this);
-    addAndMakeVisible(outputGainSlider);
+    wetDrySlider.setTextBoxStyle(Slider::NoTextBox, true, 100, 15);
+    wetDrySlider.setSliderStyle(Slider::Rotary);
+    wetDrySlider.setRange(0.5, 2.0);
+    wetDrySlider.addListener(this);
+    addAndMakeVisible(wetDrySlider);
     
     inputGainSliderLabel.setText("Input Gain", dontSendNotification);
     inputGainSliderLabel.setColour(juce::Label::textColourId,
@@ -131,12 +131,12 @@ BitCrusherAudioProcessorEditor::BitCrusherAudioProcessorEditor (BitCrusherAudioP
     inputGainSliderLabel.setJustificationType(Justification::centredTop);
     addAndMakeVisible(inputGainSliderLabel);
     
-    outputGainSliderLabel.setText("Output Gain", dontSendNotification);
-    outputGainSliderLabel.setColour(juce::Label::textColourId,
+    wetDrySliderLabel.setText("Output Gain", dontSendNotification);
+    wetDrySliderLabel.setColour(juce::Label::textColourId,
                                    juce::Colour(255.0f,100.0f,50.0f));
-    outputGainSliderLabel.attachToComponent(&outputGainSlider, false);
-    outputGainSliderLabel.setJustificationType(Justification::centredTop);
-    addAndMakeVisible(outputGainSliderLabel);
+    wetDrySliderLabel.attachToComponent(&wetDrySlider, false);
+    wetDrySliderLabel.setJustificationType(Justification::centredTop);
+    addAndMakeVisible(wetDrySliderLabel);
     
 
     // Manually call the timerCallback() once so that the sliders and UI updates
@@ -160,13 +160,13 @@ void BitCrusherAudioProcessorEditor::resized()
 {
     inputGainSlider.setBoundsRelative(0.01, 0.05, 0.18, 0.18);
     effectSlider1.setBoundsRelative(0.13, 0.05, 0.18, 0.18);
-    outputGainSlider.setBoundsRelative(0.25, 0.05, 0.18, 0.18);
+    wetDrySlider.setBoundsRelative(0.25, 0.05, 0.18, 0.18);
 }
 
 void BitCrusherAudioProcessorEditor::timerCallback(){
     inputGainSlider.setValue(processor.inputGainParam->getValue(), dontSendNotification);
     effectSlider1.setValue(processor.effectParam1->getValue(), dontSendNotification);
-    outputGainSlider.setValue(processor.outputGainParam->getValue(), dontSendNotification);
+    wetDrySlider.setValue(processor.wetDryParam->getValue(), dontSendNotification);
 }
 
 void BitCrusherAudioProcessorEditor::sliderValueChanged (Slider* sliderThatHasChanged){
@@ -175,10 +175,10 @@ void BitCrusherAudioProcessorEditor::sliderValueChanged (Slider* sliderThatHasCh
         processor.inputGainParam->setValueNotifyingHost(sliderThatHasChanged->getValue());
         processor.inputGainParam->endChangeGesture();
     }
-    else if (sliderThatHasChanged == &outputGainSlider) {
-        processor.outputGainParam->beginChangeGesture();
-        processor.outputGainParam->setValueNotifyingHost(sliderThatHasChanged->getValue());
-        processor.outputGainParam->endChangeGesture();
+    else if (sliderThatHasChanged == &wetDrySlider) {
+        processor.wetDryParam->beginChangeGesture();
+        processor.wetDryParam->setValueNotifyingHost(sliderThatHasChanged->getValue());
+        processor.wetDryParam->endChangeGesture();
     }
     else if (sliderThatHasChanged == &effectSlider1) {
         processor.effectParam1->beginChangeGesture();

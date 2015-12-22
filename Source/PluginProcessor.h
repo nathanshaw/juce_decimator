@@ -65,6 +65,7 @@ public:
     AudioProcessorParameter* effectParam1;
     AudioProcessorParameter* effectParam2;
     AudioProcessorParameter* effectSelectParam;
+    AudioProcessorParameter* wetDryParam;
     
 private:
     //==============================================================================

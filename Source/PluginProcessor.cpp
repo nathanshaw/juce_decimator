@@ -138,8 +138,6 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
             int iFactor = (int)(effect * effect * numSamples * 0.35);
             
             for (int i = 0; i < numSamples; i = i + iFactor){
-                float delta = (channelData[i] - channelData[i + iFactor])/iFactor;
-
                 for (int j = 0; j < iFactor; j++){
                     channelData[i+j] = channelData[i];
                 }
@@ -302,6 +300,8 @@ void BitCrusherAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
         else if (mode == CLEAN) {
             // nothing its clean
         }
+        
+        
         buffer.applyGain(outGain);
     }
 }
