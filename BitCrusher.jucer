@@ -8,7 +8,8 @@
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="BitCrusherAU" pluginRTASCategory="" aaxIdentifier="com.yourcompany.BitCrusher"
-              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="4.0.1">
+              pluginAAXCategory="2" pluginFormats="buildVST,buildVST3" displaySplashScreen="1"
+              jucerFormatVersion="1">
   <MAINGROUP id="ZOnmPK" name="BitCrusher">
     <GROUP id="{F98B38E7-4957-C017-B664-95745E5E0512}" name="Source">
       <FILE id="NbmvSq" name="GlitchKnob1.png" compile="0" resource="1" file="Resources/GlitchKnob1.png"/>
@@ -32,10 +33,10 @@
                vstFolder="/Users/nathan/workspace/SDKs/VST3_SDK/" vst3Folder="/Users/nathan/workspace/SDKs/VST3_SDK/">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="10.10 SDK" osxArchitecture="64BitUniversal"
-                       isDebug="1" optimisation="1" targetName="BitCrusher"/>
+                       isDebug="1" optimisation="1" targetName="BitCrusher" macOSDeploymentTarget="10.10"/>
         <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="10.10 SDK"
                        osxArchitecture="64BitUniversal" isDebug="0" optimisation="3"
-                       targetName="BitCrusher"/>
+                       targetName="BitCrusher" macOSDeploymentTarget="10.10"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../modules"/>

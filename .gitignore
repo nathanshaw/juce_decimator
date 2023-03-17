@@ -1,3 +1,5 @@
+*DS_Store
+Builds/*
 # Compiled Object files
 *.slo
 *.lo
